@@ -1,0 +1,69 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br />
+<?php echo Mage::helper('payment')->__('Payment ID: %s', $this->htmlEscape($this->getInfo()->getAdditionalInformation('paymentId'))) ?><br/>
+<?php echo Mage::helper('payment')->__('Status: %s', Mage::helper('ops')->getStatusText($this->getInfo()->getAdditionalInformation('status'))) ?><br/>
+<?php if ($this->getInfo()->hasAdditionalInformation('acceptance')): ?>
+    <?php echo Mage::helper('payment')->__('Acceptance: %s', $this->getInfo()->getAdditionalInformation('acceptance')) ?><br/>
+<?php endif; ?>
+<?php $scoring = $this->getInfo()->getAdditionalInformation('scoring'); ?>
+<?php $scoringCategory = $this->getInfo()->getAdditionalInformation('scoringCategory'); ?>
+<?php $scoringInformation = $this->getInfo()->getAdditionalInformation('additionalScoringData'); ?>
+<?php if (is_numeric($scoring) && 0 < (int) $scoring): ?>
+    <table class="scoring scoring-<?php echo $this->htmlEscape($scoringCategory); ?>">
+        <tr>
+            <th colspan="3" class="scoring scoring-<?php echo $this->htmlEscape($scoringCategory); ?>">
+                <?php echo Mage::helper('ops')->__('Scoring Value: %s', $this->htmlEscape($scoring)) ?><br />
+                <?php echo Mage::helper('ops')->__(sprintf('Scoring Category: %s', $this->htmlEscape($scoringCategory))) ?>
+            </th>
+        </tr>
+        <?php foreach($scoringInformation as $key=>$value): ?>
+        <tr>
+            <th><?php echo Mage::helper('ops')->__($key); ?></th>
+            <td><?php echo $value; ?></td>
+            <td class="ops_scoring_description">
+                <?php $descriptionTranslationTemplate = 'SCORING_DESCRIPTION_' . $key; ?>
+                <?php $description = Mage::helper('ops')->__($descriptionTranslationTemplate) ?>
+                <?php if ($description != $descriptionTranslationTemplate): ?>
+                <img src="<?php echo $this->getSkinUrl('images/fam_help.gif') ?>" alt="?" />
+                <div>
+                    <?php echo $description ?>
+                </div>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+    <?php if ('O' == $scoringCategory): ?>
+        <div class="notice-msg" style="padding: 9px 30px; margin-top: 3px">
+            <?php echo Mage::helper('ops')->__('This might be a fraud attempt. Please check details for more information.') ?>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+        Foo
+    <?php echo Mage::helper('ops')->__('No scoring information available'); ?>
+<?php endif; ?>

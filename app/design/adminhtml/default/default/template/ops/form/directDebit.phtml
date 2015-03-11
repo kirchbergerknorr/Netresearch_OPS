@@ -1,0 +1,58 @@
+<?php
+/**
+ * Netresearch_OPS_Block_Form_OpsId
+ *
+ * @category design
+ * @package OPS
+ * @copyright 2012 Netresearch App Factory AG <http://www.netresearch.de>
+ * @author Thomas Birke <thomas.birke@netresearch.de>
+ * @license OSL 3.0
+ */
+?>
+<?php $this->getParams(); ?>
+<script type="text/javascript">
+    Translator.add(
+        'Account number must contain numbers only.',
+        '<?php echo Mage::helper('ops')->__('Account number must contain numbers only.') ?>'
+    );
+    Translator.add(
+        'Bank code must contain numbers only.',
+        '<?php echo Mage::helper('ops')->__('Bank code must contain numbers only.') ?>'
+    );
+    Translator.add(
+        'Payment failed. Please select another payment method.',
+        '<?php echo Mage::helper('ops')->__('Payment failed. Please select another payment method.') ?>'
+    );
+</script>
+<ul id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none">
+    <li>
+        <label for="ops_directdebit_country"><?php echo $this->__('country'); ?><em class="required">*</em></label><br/>
+        <select title="ops_directdebit_country" class="required-entry" name="ops_directDebit[country]" id="ops_directdebit_country" onchange="payment.toggleOpsDirectDebitInputs(this.value)">
+            <option value=""><?php echo $this->__('--Please Select--')?></option>
+            <?php foreach ($this->getDirectDebitCountryIds() as $countryId) : ?>
+                <option value="<?php echo $countryId; ?>" <?php if (strtoupper($countryId) == $this->getCountry()): ?> selected="selected" <?php endif; ?> ><?php echo Mage::getModel('directory/country')->loadByCode($countryId)->getName(); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </li>
+    <li>
+        <label for="ops_directdebit_CN"><?php echo $this->__('Account holder'); ?></label><br/>
+        <?php $cn = trim($this->getQuote()->getBillingAddress()->getFirstname() . ' ' . $this->getQuote()->getBillingAddress()->getLastname()); ?>
+        <input title="CN" value="<?php echo $this->getCardholderName(); ?>" class="input-text required-entry" autocomplete="off" type="text" name="ops_directDebit[CN]" id="ops_directdebit_CN" length="50" value="<?php echo $cn ?>"/>
+    </li>
+    <li>
+        <label for="ops_directdebit_iban"><?php echo $this->__('IBAN'); ?></label><br/>
+        <input title="IBAN" value="<?php echo $this->getIban(); ?>" class="input-text <?php if ($this->isIbanFieldRequired()): ?> required-entry <?php endif ?>" autocomplete="off" type="text" name="ops_directDebit[iban]" id="ops_directdebit_iban" onblur="payment.setRequiredDirectDebitFields(this);"/>
+    </li>
+    <li style="display:<?php echo ($this->isBicFieldVisible())? 'block' : 'none'; ?>">
+        <label for="ops_directdebit_bic"><?php echo $this->__('BIC'); ?></label><br/>
+        <input value="<?php echo $this->getBic(); ?>"class="input-text" type="text" name="ops_directDebit[bic]" id="ops_directdebit_bic" onblur="payment.setRequiredDirectDebitFields(this);"/>
+    </li>
+    <li>
+        <label for="ops_directdebit_account"><?php echo $this->__('Account number'); ?></label><br/>
+        <input value="<?php echo $this->getAccount(); ?>" title="account" class="input-text <?php if ($this->isAccountFieldRequired()): ?> required-entry <?php endif; ?>" autocomplete="off" type="text" name="ops_directDebit[account]" id="ops_directdebit_account" maxlength="11" onblur="payment.setRequiredDirectDebitFields(this);" />
+    </li>
+    <li style="display:<?php echo ($this->isBankCodeFieldVisible())? 'block' : 'none'; ?>">
+        <label for="ops_directdebit_bankcode"><?php echo $this->__('Bank code'); ?></label><br/>
+        <input value="<?php echo $this->getBankcode(); ?>" class="input-text <?php if ($this->isBankcodeFieldRequired()): ?> required-entry <?php endif; ?>" type="text" name="ops_directDebit[bankcode]" id="ops_directdebit_bankcode" maxlength="8" onblur="payment.setRequiredDirectDebitFields(this);" />
+    </li>
+</ul>

@@ -1,0 +1,20 @@
+<?php
+/**
+ * Netresearch_OPS_Block_Form_OpsId
+ * 
+ * @category  design
+ * @package   OPS
+ * @copyright 2012 Netresearch App Factory AG <http://www.netresearch.de>
+ * @author    Thomas Birke <thomas.birke@netresearch.de> 
+ * @license   OSL 3.0
+ */
+?>
+<ul id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none">
+    <li>
+        <div class="input-box">
+            <label for="ops_payId"><?php echo Mage::helper('ops')->__('Ingenico Payment Services payment id') ?> <span class="required">*</span></label><br/>
+            <input type="text" id="ops_payId" name="payment[ops_pay_id]" title="<?php echo Mage::helper('payment')->__("Ingenico Payment Services payment id") ?>" class="required-entry input-text" value="<?php echo $this->getInfoData('OpsPayId'); ?>"/>
+        </div>
+    </li>
+</ul>
+

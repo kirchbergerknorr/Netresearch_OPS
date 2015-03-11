@@ -1,0 +1,79 @@
+<table cellspacing="0" class="switcher" width="100%" class="form-list">
+    <col width="300px"/>
+    <col/>
+    <thead>
+    <tr>
+        <th colspan="2">
+            <?php echo $this->escapeHtml($this->getFieldsetLabel()) ?>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><?php echo $this->__('Extension Version'); ?></td>
+        <td><?php echo $this->getExtensionVersion(); ?></td>
+    </tr>
+    <?php if ($this->hasDocumentation()): ?>
+        <tr>
+            <td><?php echo $this->__('Documentation'); ?></td>
+            <td>
+                <ul>
+                    <?php if ($this->getDocLinkEn()): ?>
+                        <li><a href="<?php echo $this->getDocLinkEn() ?>" target="_blank"><?php echo $this->__('English'); ?></a></li>
+                    <?php endif; ?>
+                    <?php if ($this->getDocLinkDe()): ?>
+                        <li><a href="<?php echo $this->getDocLinkDe() ?>" target="_blank"><?php echo $this->__('German'); ?></a></li>
+                    <?php endif; ?>
+                </ul>
+            </td>
+        </tr>
+    <?php endif; ?>
+    <?php if ($this->hasFaq()): ?>
+        <tr>
+            <td><?php echo $this->__('First Aid - FAQ'); ?></td>
+            <td>
+                <ul>
+                    <?php if ($this->getFaqLinkEn()): ?>
+                        <li><a href="<?php echo $this->getFaqLinkEn() ?>" target="_blank"><?php echo $this->__('English'); ?></a></li>
+                    <?php endif; ?>
+                    <?php if ($this->getFaqLinkDe()): ?>
+                        <li><a href="<?php echo $this->getFaqLinkDe() ?>" target="_blank"><?php echo $this->__('German'); ?></a></li>
+                    <?php endif; ?>
+                </ul>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <?php if (0 < strlen($this->getSupportMail())): ?>
+        <tr>
+            <td class=label><?php echo $this->__('Need support? Contact Ingenico Payment Services:'); ?></td>
+            <?php
+            $bodyInfo = array(
+                '',
+                '===',
+                'Magento version: ' . $this->getMageVersion(),
+                'Ingenico Payment Services app version: ' . $this->getExtensionVersion(),
+                'Shop URI: ' . Mage::getBaseUrl()
+            );
+            ?>
+            <td>
+                <a href="mailto:<?php echo $this->getSupportMail(); ?>?body=<?php echo rawurlencode(implode("\n", $bodyInfo)) ?>"><?php echo $this->getSupportMail() ?></a>
+            </td>
+        </tr>
+    <?php endif; ?>
+    <?php if ($this->hasDevPrefix()): ?>
+        <tr style="color:red">
+            <td class=label><?php echo $this->__('devprefix'); ?></td>
+            <td><?php echo $this->getDevPrefix(); ?></td>
+        </tr>
+    <?php endif; ?>
+    <tr>
+        <td>
+            <a style="display: none" href="<?php echo $this->getLogDownloadLink(); ?>">
+                <?php echo $this->__('Download Logfile'); ?>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+

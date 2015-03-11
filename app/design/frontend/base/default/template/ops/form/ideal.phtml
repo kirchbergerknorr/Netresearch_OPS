@@ -1,0 +1,15 @@
+<?php
+/** @var $this Netresearch_OPS_Block_Form_Ideal */
+$issuers = $this->getIssuers();
+?>
+<ul class="form-list ops-form-list" id="payment_form_ops_iDeal" style="display:none;">
+    <li>
+        <select name="payment[iDeal_issuer_id]" id="ops_iDeal_issuer_id">
+            <?php foreach ($issuers as $key => $value): ?>
+                <option value=<?php echo $this->escapeHtml($key) ?>>
+                    <?php echo $this->escapeHtml($value) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </li>
+</ul>

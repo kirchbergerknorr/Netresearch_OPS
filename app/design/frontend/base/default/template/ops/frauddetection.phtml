@@ -1,0 +1,25 @@
+<?php
+$aid = $this->getTrackingCodeAid();
+$sid = $this->getTrackingSid();
+?>
+<script type="text/javascript">
+    (function () {
+        var rd = document.createElement('script');
+        rd.type = 'text/javascript';
+        rd.async = true;
+        rd.src = ('https:' == document.location.protocol ? 'https://' : 'http://')
+            + 'elistva.com/api/script.js?'
+            + 'aid=<?php echo $aid ?>&sid=<?php echo $sid ?>';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(rd, s);
+    })();
+</script>
+<noscript><p
+        style="background:url(//elistva.com/api/assets/clear.png?aid=<?php echo $aid ?>&sid=<?php echo $sid ?>)"></p>
+</noscript>
+<object type="application/x-shockwave-flash"
+        data="//elistva.com/api/udid.swf?aid=<?php echo $aid ?>&sid=<?php echo $sid ?>"
+        width="1" height="1">
+    <param name="movie"
+           value="//elistva.com/api/udid.swf?aid=<?php echo $aid ?>&sid=<?php echo $sid ?>"/>
+</object>

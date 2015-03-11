@@ -1,0 +1,546 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    Mage
+ * @package     Netresearch_OPS
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Netresearch_OPS>
+            <version>14.12.03</version>
+        </Netresearch_OPS>
+    </modules>
+    <global>
+        <helpers>
+            <ops>
+                <class>Netresearch_OPS_Helper</class>
+            </ops>
+        </helpers>
+        <models>
+            <ops>
+                <class>Netresearch_OPS_Model</class>
+                <resourceModel>ops_mysql4</resourceModel>
+            </ops>
+            <ops_mysql4>
+                <class>Netresearch_OPS_Model_Mysql4</class>
+                <entities>
+                    <alias>
+                        <table>ops_alias</table>
+                    </alias>
+                    <kwixo_category_mapping>
+                        <table>ops_kwixo_category_mapping</table>
+                    </kwixo_category_mapping>
+                    <kwixo_shipping_setting>
+                        <table>ops_kwixo_shipping_setting</table>
+                    </kwixo_shipping_setting>
+                </entities>
+            </ops_mysql4>
+        </models>
+        <blocks>
+            <ops>
+                <class>Netresearch_OPS_Block</class>
+            </ops>
+        </blocks>
+        <events>
+            <sales_model_service_quote_submit_failure>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>salesModelServiceQuoteSubmitFailure</method>
+                    </ops_observer>
+                </observers>
+            </sales_model_service_quote_submit_failure>
+            <sales_model_service_quote_submit_success>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>salesModelServiceQuoteSubmitSuccess</method>
+                    </ops_observer>
+                </observers>
+            </sales_model_service_quote_submit_success>
+
+             <!--frontend-->
+            <checkout_type_onepage_save_order_after>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>checkoutTypeOnepageSaveOrderAfter</method>
+                    </ops_observer>
+                </observers>
+            </checkout_type_onepage_save_order_after>
+
+             <!--frontend AND backend-->
+            <checkout_type_onepage_save_order>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>checkoutTypeOnepageSaveOrderBefore</method>
+                    </ops_observer>
+                </observers>
+            </checkout_type_onepage_save_order>
+            <sales_order_payment_place_end>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>setOrderStateForDirectDebitsNl</method>
+                    </ops_observer>
+                </observers>
+            </sales_order_payment_place_end>
+
+
+
+             <!--backend-->
+            <checkout_submit_all_after>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>checkoutSubmitAllAfter</method>
+                    </ops_observer>
+                </observers>
+            </checkout_submit_all_after>
+            <adminhtml_block_html_before>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>updateOrderCancelButton</method>
+                    </ops_observer>
+                </observers>
+            </adminhtml_block_html_before>
+
+            <ops_sales_order_save_commit_after>
+                <observers>
+                    <downloadable_observer>
+                        <class>downloadable/observer</class>
+                        <method>setLinkStatus</method>
+                    </downloadable_observer>
+                </observers>
+            </ops_sales_order_save_commit_after>
+
+            <sales_quote_payment_import_data_before>
+                <observers>
+                    <ops_observer>
+                        <type>singleton</type>
+                        <class>ops/observer</class>
+                        <method>clearPaymentMethodFromQuote</method>
+                    </ops_observer>
+                </observers>
+            </sales_quote_payment_import_data_before>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <add_cc_payment_method>
+                        <class>ops/observer</class>
+                        <method>addCcPaymentMethod</method>
+                    </add_cc_payment_method>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
+            <sales_order_save_before>
+                <observers>
+                    <check_for_ops_status>
+                        <class>ops/observer</class>
+                        <method>checkForOpsStatus</method>
+                    </check_for_ops_status>
+                </observers>
+            </sales_order_save_before>
+        </events>
+        <resources>
+            <!-- initialize sql upgrade setup -->
+            <ops_setup>
+                <setup>
+                    <module>Netresearch_OPS</module>
+                    <class>Mage_Sales_Model_Mysql4_Setup</class>
+                </setup>
+            </ops_setup>
+        </resources>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <ops before="Mage_Adminhtml">Netresearch_OPS_Adminhtml</ops>
+                    </modules>
+                </args>
+            </adminhtml>
+            <ops>
+                <use>standard</use>
+                <args>
+                    <module>Netresearch_OPS</module>
+                    <frontName>ops</frontName>
+                </args>
+            </ops>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <ops>
+                    <file>ops.xml</file>
+                </ops>
+            </updates>
+        </layout>
+        <events>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <append_check_box_to_refund_form>
+                        <class>ops/observer</class>
+                        <method>appendCheckBoxToRefundForm</method>
+                    </append_check_box_to_refund_form>
+                    <append_warning_for_openinvoice_refunds>
+                        <class>ops/observer</class>
+                        <method>appendWarningToRefundFormForOpenInvoiceNl</method>
+                    </append_warning_for_openinvoice_refunds>
+                    <show_warning_if_ops_transaction_is_closed>
+                        <class>ops/observer</class>
+                        <method>showWarningForClosedTransactions</method>
+                    </show_warning_if_ops_transaction_is_closed>
+                    <append_warning_for_openInvoice_payments>
+                        <class>ops/observer</class>
+                        <method>appendPartialCaptureWarningForOpenInvoice</method>
+                    </append_warning_for_openInvoice_payments>
+                </observers>
+            </core_block_abstract_to_html_after>
+
+            <sales_order_payment_capture>
+                <observers>
+                    <add_invoice_to_payment>
+                        <class>ops/observer</class>
+                        <method>salesOrderPaymentCapture</method>
+                    </add_invoice_to_payment>
+                </observers>
+            </sales_order_payment_capture>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <append_refresh_button_to_order_view>
+                        <class>ops/observer</class>
+                        <method>coreBlockAbstractPrepareLayoutBefore</method>
+                    </append_refresh_button_to_order_view>
+                    <disable_capture_for_zero_amount_invoice>
+                        <class>ops/observer</class>
+                        <method>disableCaptureForZeroAmountInvoice</method>
+                    </disable_capture_for_zero_amount_invoice>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
+        </events>
+        <translate>
+            <modules>
+                <Netresearch_OPS>
+                    <files>
+                        <default>Netresearch_OPS.csv</default>
+                    </files>
+                </Netresearch_OPS>
+            </modules>
+        </translate>
+    </adminhtml>
+    <frontend>
+        <layout>
+            <updates>
+                <ops>
+                    <file>ops.xml</file>
+                </ops>
+            </updates>
+        </layout>
+        <secure_url>
+            <ops_api>/ops/api</ops_api>
+        </secure_url>
+        <routers>
+            <ops>
+                <use>standard</use>
+                <args>
+                    <module>Netresearch_OPS</module>
+                    <frontName>ops</frontName>
+                </args>
+            </ops>
+        </routers>
+        <translate>
+            <modules>
+                <Netresearch_OPS>
+                    <files>
+                        <default>Netresearch_OPS.csv</default>
+                    </files>
+                </Netresearch_OPS>
+            </modules>
+        </translate>
+        <events>
+            <controller_action_postdispatch_checkout_onepage_savePayment>
+                <observers>
+                    <controller_action_postdispatch>
+                        <class>ops/observer</class>
+                        <method>controllerActionCheckoutOnepagePostdispatch</method>
+                    </controller_action_postdispatch>
+                </observers>
+            </controller_action_postdispatch_checkout_onepage_savePayment>
+        </events>
+    </frontend>
+
+    <default>
+        <payment_services>
+            <ops>
+                 <model>ops/payment_abstract</model>
+                 <title>Ingenico Payment Services</title>
+                 <secret_key backend_model="adminhtml/system_config_backend_encrypted"/>
+                 <payment_action>authorize</payment_action>
+                 <send_invoice>0</send_invoice>
+                 <template>ops</template>
+                 <ops_gateway>https://secure.ogone.com/ncol/test/orderstandard_utf8.asp</ops_gateway>
+                 <ops_alias_gateway>https://secure.ogone.com/ncol/test/alias_gateway_utf8.asp</ops_alias_gateway>
+                 <frontend_gateway>https://secure.ogone.com/ncol/test/orderstandard_utf8.asp</frontend_gateway>
+                 <directlink_gateway>https://secure.ogone.com/ncol/test/maintenancedirect.asp</directlink_gateway>
+                 <directlink_gateway_order>https://secure.ogone.com/ncol/test/orderdirect.asp</directlink_gateway_order>
+                 <directlink_maintenance_api>https://secure.ogone.com/ncol/test/querydirect.asp</directlink_maintenance_api>
+                 <showcatalogbutton>1</showcatalogbutton>
+                 <showhomebutton>1</showhomebutton>
+                 <support_mail>support@ecom.ingenico.com</support_mail>
+                 <doc_link_de></doc_link_de>
+                 <doc_link_en>http://payment-services.ingenico.com/en/ogone/support/guides/integration%20guides/magento-extension</doc_link_en>
+                 <faq_link_de>http://de.nr-apps.com/faq/ingenico</faq_link_de>
+                 <faq_link_en>http://www.nr-apps.com/faq/ingenico</faq_link_en>
+                 <redirectOrderReference>quoteId</redirectOrderReference>
+                 <inlineOrderReference>quoteId</inlineOrderReference>
+                 <showQuoteIdInOrderGrid>1</showQuoteIdInOrderGrid>
+                 <enableTrackingCode>0</enableTrackingCode>
+                 <devprefix></devprefix>
+                 <submitExtraParameters>1</submitExtraParameters>
+                 <paramLength>
+                     <ECOM_SHIPTO_POSTAL_NAME_FIRST>50</ECOM_SHIPTO_POSTAL_NAME_FIRST>
+                     <ECOM_SHIPTO_POSTAL_NAME_LAST>50</ECOM_SHIPTO_POSTAL_NAME_LAST>
+                     <ECOM_SHIPTO_POSTAL_STREET_LINE1>35</ECOM_SHIPTO_POSTAL_STREET_LINE1>
+                     <ECOM_SHIPTO_POSTAL_STREET_LINE2>35</ECOM_SHIPTO_POSTAL_STREET_LINE2>
+                     <ECOM_SHIPTO_POSTAL_STREET_LINE3>35</ECOM_SHIPTO_POSTAL_STREET_LINE3>
+                     <ECOM_SHIPTO_POSTAL_COUNTRYCODE>2</ECOM_SHIPTO_POSTAL_COUNTRYCODE>
+                     <ECOM_SHIPTO_POSTAL_COUNTY>25</ECOM_SHIPTO_POSTAL_COUNTY>
+                     <ECOM_SHIPTO_POSTAL_POSTALCODE>10</ECOM_SHIPTO_POSTAL_POSTALCODE>
+                     <ECOM_SHIPTO_POSTAL_CITY>25</ECOM_SHIPTO_POSTAL_CITY>
+                     <ECOM_SHIPTO_POSTAL_STREET_NUMBER>10</ECOM_SHIPTO_POSTAL_STREET_NUMBER>
+                     <CN>35</CN>
+                     <OWNERZIP>10</OWNERZIP>
+                     <OWNERCTY>2</OWNERCTY>
+                     <OWNERTOWN>40</OWNERTOWN>
+                     <OWNERTELNO>30</OWNERTELNO>
+                     <OWNERADDRESS>35</OWNERADDRESS>
+                     <ECOM_BILLTO_POSTAL_POSTALCODE>10</ECOM_BILLTO_POSTAL_POSTALCODE>
+                 </paramLength>
+                 <frontendFieldMapping>
+                     <CN>
+                         <firstname>billing:firstname</firstname>
+                         <lastname>billing:lastname</lastname>
+                     </CN>
+                     <OWNERZIP>billing:postcode</OWNERZIP>
+                     <OWNERCTY>billing:region_id</OWNERCTY>
+                     <OWNERTOWN>billing:city</OWNERTOWN>
+                     <OWNERTELNO>OWNERTELNO</OWNERTELNO>
+                     <OWNERADDRESS>billing:street1</OWNERADDRESS>
+                     <ECOM_BILLTO_POSTAL_POSTALCODE>billing:postcode</ECOM_BILLTO_POSTAL_POSTALCODE>
+                     <ECOM_SHIPTO_POSTAL_NAME_FIRST>shipping:firstname</ECOM_SHIPTO_POSTAL_NAME_FIRST>
+                     <ECOM_SHIPTO_POSTAL_NAME_LAST>shipping:lastname</ECOM_SHIPTO_POSTAL_NAME_LAST>
+                     <ECOM_SHIPTO_POSTAL_STREET1>shipping:street1</ECOM_SHIPTO_POSTAL_STREET1>
+                     <ECOM_SHIPTO_POSTAL_STREET2>shipping:street2</ECOM_SHIPTO_POSTAL_STREET2>
+                     <ECOM_SHIPTO_POSTAL_STREET3>shipping:street3</ECOM_SHIPTO_POSTAL_STREET3>
+                     <ECOM_SHIPTO_POSTAL_COUNTRYCODE>shipping:country_id</ECOM_SHIPTO_POSTAL_COUNTRYCODE>
+                     <ECOM_SHIPTO_POSTAL_COUNTY>shipping:region_id</ECOM_SHIPTO_POSTAL_COUNTY>
+                     <ECOM_SHIPTO_POSTAL_POSTALCODE>shipping:postcode</ECOM_SHIPTO_POSTAL_POSTALCODE>
+                     <ECOM_SHIPTO_POSTAL_CITY>shipping:city</ECOM_SHIPTO_POSTAL_CITY>
+                     <ECOM_SHIPTO_POSTAL_STREET_NUMBER>shipping:street</ECOM_SHIPTO_POSTAL_STREET_NUMBER>
+                     <ECOM_SHIPTO_POSTAL_POSTAL_STATE>shipping:region_id</ECOM_SHIPTO_POSTAL_POSTAL_STATE>
+                 </frontendFieldMapping>
+            </ops>
+        </payment_services>
+        <payment>
+            <ops_wallie>
+                <title>Ingenico Payment Services Wallie</title>
+                <model>ops/payment_wallie</model>
+            </ops_wallie>
+            <ops_directDebit>
+                <title>Ingenico Payment Services DirectDebit</title>
+                <model>ops/payment_directDebit</model>
+            </ops_directDebit>
+            <ops_tunz>
+                <title>Ingenico Payment Services Tunz</title>
+                <model>ops/payment_tunz</model>
+            </ops_tunz>
+            <ops_postFinanceEFinance>
+                <title>Ingenico Payment Services PostFinanceEFinance</title>
+                <model>ops/payment_postFinanceEFinance</model>
+            </ops_postFinanceEFinance>
+            <ops_eDankort>
+                <title>Ingenico Payment Services EDankort</title>
+                <model>ops/payment_eDankort</model>
+            </ops_eDankort>
+            <ops_kbcOnline>
+                <title>Ingenico Payment Services KbcOnline</title>
+                <model>ops/payment_kbcOnline</model>
+            </ops_kbcOnline>
+            <ops_iDeal>
+                <title>Ingenico Payment Services IDeal</title>
+                <model>ops/payment_iDeal</model>
+                <issuer>
+                    <ABNANL2A>ABN AMRO</ABNANL2A>
+                    <RABONL2U>Rabobank</RABONL2U>
+                    <INGBNL2A>ING</INGBNL2A>
+                    <SNSBNL2A>SNS Bank</SNSBNL2A>
+                    <RBRBNL21>Regio Bank</RBRBNL21>
+                    <ASNBNL21>ASN Bank</ASNBNL21>
+                    <TRIONL2U>Triodos Bank</TRIONL2U>
+                    <FVLBNL22>Van Lanschot Bankiers</FVLBNL22>
+                    <KNABNL2H>Knab Bank</KNABNL2H>
+                </issuer>
+            </ops_iDeal>
+            <ops_belfiusDirectNet>
+                <title>Ingenico Payment Services Belfius Direct Net</title>
+                <model>ops/payment_belfiusDirectNet</model>
+            </ops_belfiusDirectNet>
+            <ops_bankTransfer>
+                <title>Ingenico Payment Services BankTransfer</title>
+                <model>ops/payment_bankTransfer</model>
+            </ops_bankTransfer>
+            <ops_openInvoiceDe>
+                <title>Rechnung</title>
+                <model>ops/payment_openInvoiceDe</model>
+                <allowspecific>1</allowspecific>
+                <specificcountry>DE</specificcountry>
+            </ops_openInvoiceDe>
+            <ops_openInvoiceNl>
+                <title>Rechnung (Niederlande)</title>
+                <model>ops/payment_openInvoiceNl</model>
+                <allowspecific>1</allowspecific>
+                <specificcountry>NL</specificcountry>
+            </ops_openInvoiceNl>
+            <ops_cbcOnline>
+                <title>Ingenico Payment Services CbcOnline</title>
+                <model>ops/payment_cbcOnline</model>
+            </ops_cbcOnline>
+            <ops_giroPay>
+                <title>Ingenico Payment Services GiroPay</title>
+                <model>ops/payment_giroPay</model>
+            </ops_giroPay>
+            <ops_interSolve>
+                <title>Ingenico Payment Services InterSolve</title>
+                <model>ops/payment_interSolve</model>
+            </ops_interSolve>
+            <ops_cashU>
+                <title>Ingenico Payment Services CashU</title>
+                <model>ops/payment_cashU</model>
+            </ops_cashU>
+            <ops_mpass>
+                <title>Ingenico Payment Services Mpass</title>
+                <model>ops/payment_mpass</model>
+            </ops_mpass>
+            <ops_miniTix>
+                <title>Ingenico Payment Services MiniTix</title>
+                <model>ops/payment_miniTix</model>
+            </ops_miniTix>
+            <ops_cod>
+                <title>Ingenico Payment Services Cod</title>
+                <model>ops/payment_cod</model>
+            </ops_cod>
+            <ops_paypal>
+                <title>Ingenico Payment Services Paypal</title>
+                <model>ops/payment_paypal</model>
+            </ops_paypal>
+            <ops_eps>
+                <title>Ingenico Payment Services Eps</title>
+                <model>ops/payment_eps</model>
+            </ops_eps>
+            <ops_pingPing>
+                <title>Ingenico Payment Services PingPing</title>
+                <model>ops/payment_pingPing</model>
+            </ops_pingPing>
+            <ops_fortisPayButton>
+                <title>Ingenico Payment Services FortisPayButton</title>
+                <model>ops/payment_fortisPayButton</model>
+            </ops_fortisPayButton>
+            <ops_directEbanking>
+                <title>Ingenico Payment Services DirectEbanking</title>
+                <model>ops/payment_directEbanking</model>
+            </ops_directEbanking>
+            <ops_cc>
+                <title>Ingenico Payment Services Cc</title>
+                <model>ops/payment_cc</model>
+                <enabled_3dsecure>0</enabled_3dsecure>
+                <redirect_all>0</redirect_all>
+                <inline_types>American Express,Diners Club,MaestroUK,MasterCard,VISA</inline_types>
+                <availableTypes>AIRPLUS,American Express,Aurore,BCMC,CB,Cofinoga,Dankort,Diners Club,JCB,Maestro,MaestroUK,MasterCard,PRIVILEGE,PostFinance card,UATP,UNEUROCOM,VISA</availableTypes>
+                <show_alias_manager_info_for_guests>0</show_alias_manager_info_for_guests>
+            </ops_cc>
+            <ops_ingHomePay>
+                <title>Ingenico Payment Services IngHomePay</title>
+                <model>ops/payment_ingHomePay</model>
+            </ops_ingHomePay>
+            <ops_paysafecard>
+                <title>Ingenico Payment Services Paysafecard</title>
+                <model>ops/payment_paysafecard</model>
+            </ops_paysafecard>
+            <ops_kwixoCredit>
+                <title>Ingenico Payment Services Kwixo Credit</title>
+                <model>ops/payment_kwixoCredit</model>
+            </ops_kwixoCredit>
+            <ops_kwixoApresReception>
+                <title>Ingenico Payment Services Kwixo Apres Reception</title>
+                <model>ops/payment_KwixoApresReception</model>
+            </ops_kwixoApresReception>
+            <ops_kwixoComptant>
+                <title>Ingenico Payment Services Kwixo Comptant</title>
+                <model>ops/payment_KwixoComptant</model>
+            </ops_kwixoComptant>
+            <ops_opsid>
+                <title>Existing Ingenico Payment Services Transaction</title>
+                <model>ops/payment_backend_opsId</model>
+            </ops_opsid>
+            <additional_params_required>
+                <capture>
+                    <OpenInvoiceNl>Netresearch_OPS_Model_Payment_OpenInvoiceNl</OpenInvoiceNl>
+                </capture>
+                <refund>
+                    <OpenInvoiceNl>Netresearch_OPS_Model_Payment_OpenInvoiceNl</OpenInvoiceNl>
+                </refund>
+            </additional_params_required>
+        </payment>
+
+    </default>
+    <crontab>
+        <jobs>
+            <ops_clean_up_old_cc_data>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ops/observer::cleanUpOldPaymentData</model>
+                </run>
+            </ops_clean_up_old_cc_data>
+        </jobs>
+    </crontab>
+    <phpunit>
+        <suite>
+            <modules>
+                <Netresearch_OPS />
+            </modules>
+        </suite>
+    </phpunit>
+</config>

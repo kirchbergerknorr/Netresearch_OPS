@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+-->
+<layout version="0.1.0">
+    <add_order_grid_column_handle>
+        <reference name="sales_order.grid">
+            <action method="addColumnAfter" ifconfig="payment_services/ops/showQuoteIdInOrderGrid">
+                <columnId>quote_id</columnId>
+                <arguments module="ops" translate="header">
+                    <header>Quote #</header>
+                    <index>quote_id</index>
+                    <type>text</type>
+                    <width>80px</width>
+                </arguments>
+                <after>real_order_id</after>
+            </action>
+        </reference>
+    </add_order_grid_column_handle>
+    <!-- order grid action -->
+    <adminhtml_sales_order_grid>
+        <!-- apply the layout handle defined above -->
+        <update handle="add_order_grid_column_handle" />
+    </adminhtml_sales_order_grid>
+    <!-- order grid view action -->
+    <adminhtml_sales_order_index>
+        <!-- apply the layout handle defined above -->
+        <update handle="add_order_grid_column_handle" />
+    </adminhtml_sales_order_index>
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>ops.css</name></action>
+        </reference>
+    </default>
+    <adminhtml_sales_order_create_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/ops/payment.js</name></action>
+
+        </reference>
+    </adminhtml_sales_order_create_index>
+
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <block type="ops/adminhtml_customer_edit_tab_alias" name="customer_edit_tab_ops_alias" after="orders" />
+            <action method="addTab"><name>customer_edit_tab_ops_alias</name><block>customer_edit_tab_ops_alias</block></action>
+        </reference>
+    </adminhtml_customer_edit>
+    <adminhtml_kwixocategory_index>
+        <reference name="head">
+            <action method="addJs"><js>extjs/ext-tree.js</js></action>
+            <action method="addJs"><js>extjs/ext-tree-checkbox.js</js></action>
+            <action method="addItem"><type>js</type><name>extjs/ext-tree.js</name></action>
+            <action method="addItem"><type>js</type><name>extjs/ext-tree-checkbox.js</name></action>
+            <action method="addItem"><type>js_css</type><name>extjs/resources/css/ext-all.css</name></action>
+            <action method="addItem"><type>js_css</type><name>extjs/resources/css/ytheme-magento.css</name></action>
+        </reference>
+        <reference name="left">
+            <reference name="left">
+                <block type="ops/adminhtml_kwixocategory_categoryTree" name="tree" />
+            </reference>
+        </reference>
+        <reference name="content">
+            <block type="ops/adminhtml_kwixocategory_edit" name="catproduct" template="ops/form/kwixo/category.phtml"/>
+        </reference>
+    </adminhtml_kwixocategory_index>
+    <adminhtml_kwixoshipping_index>
+        <reference name="content">
+            <block type="ops/adminhtml_kwixo_shipping_edit" name="kwixoshipping" template="ops/form/kwixo/shipping.phtml"/>
+        </reference>
+    </adminhtml_kwixoshipping_index>
+</layout>

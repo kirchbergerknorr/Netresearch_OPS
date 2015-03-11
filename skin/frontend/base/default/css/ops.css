@@ -1,0 +1,76 @@
+.ops-payment-paypage #ie_cc {
+    margin-top:20px;
+}
+
+.ops-payment-paypage #ie_cc td {
+    text-align:center;
+}
+
+td .ncol {
+    position:    absolute;
+}
+
+.ops-payment-paypage td .ncol {
+    position:    inherit;
+    left:        inherit;
+    width:       auto;
+}
+
+.ops-form-list #OPS_CC_BRAND {
+    width: 260px;
+    float: none;
+}
+
+.ops-form-list label {
+    float: none;
+}
+
+.ncoltable2 td {
+    text-align: center;
+}
+
+.ncoltable2 td.ncolinput {
+    text-align: left;
+}
+
+.ncoltable2 td.ncoltxtl2, .ncoltable1 td.ncoltxtl {
+    text-align: right;
+    padding-right: 5px;
+}
+
+.ops-payment-paypage input.ncol {
+    background: none repeat scroll 0 0 #F18200;
+    border-color: #ED6502 #A04300 #A04300 #ED6502;
+    border-style: solid;
+    border-width: 1px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font: bold 12px arial,helvetica,sans-serif;
+    padding: 0 7px 1px;
+    text-align: center !important;
+    white-space: nowrap;
+}
+
+#payment_form_ops_alias li {
+    background: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    padding: 12px 10px 0;
+}
+
+#payment_form_ops_alias label {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding-left: 8px;
+    text-align: left;
+    vertical-align: top;
+    width: 400px;
+}
+
+.readonly {
+    color: #c6cbc7;
+}
+
+#ops_review_form input
+{
+    width: 255px;
+}

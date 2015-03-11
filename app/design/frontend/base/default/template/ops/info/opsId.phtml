@@ -1,0 +1,2 @@
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?> - <?php echo $this->htmlEscape($this->getMethod()->getOpsBrand($this->getInfo())) ?><br />
+<?php echo Mage::helper('payment')->__('Payment ID: %s', $this->htmlEscape($this->getInfo()->getAdditionalInformation('paymentId'))) ?><br/>

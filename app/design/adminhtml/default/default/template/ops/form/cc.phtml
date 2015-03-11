@@ -1,0 +1,283 @@
+<?php
+/**
+ * Netresearch_OPS_Block_Form_Cc
+ *
+ * @category  design
+ * @package   OPS
+ * @copyright 2012 Netresearch App Factory AG <http://www.netresearch.de>
+ * @author    Thomas Birke <thomas.birke@netresearch.de>
+ * @license   OSL 3.0
+ */
+?>
+<script type="text/javascript">
+    Translator.add(
+        'Payment failed. Please select another payment method.',
+        '<?php echo Mage::helper('ops')->__('Payment failed. Please select another payment method.') ?>'
+    );
+    Translator.add(
+        'Payment failed. Please review your input or select another payment method.',
+        '<?php echo Mage::helper('ops')->__('Payment failed. Please review your input or select another payment method.') ?>'
+    );
+    Translator.add(
+        'Incorrect credit card expiration date.',
+        '<?php echo Mage::helper('ops')->__('Incorrect credit card expiration date.') ?>'
+    );
+    Validation.addAllThese([
+        ['validate-ops-cc-exp', 'Incorrect credit card expiration date.', function(v, elm) {
+                var ccExpMonth   = v;
+                var ccExpYear    = '20' + $('OPS_CC_ECOM_CARDINFO_EXPDATE_YEAR').value;
+                var currentTime  = new Date();
+                var currentMonth = currentTime.getMonth() + 1;
+                var currentYear  = currentTime.getFullYear();
+                if (ccExpMonth < currentMonth && ccExpYear == currentYear) {
+                    return false;
+                }
+                return true;
+        }]
+    ]);
+</script>
+
+<style>
+iframe {
+    border: 1px solid #D6D6D6;
+    height: 220px;
+}
+</style>
+
+<?php $_code = $this->getMethodCode() ?>
+<?php $_session = Mage::getSingleton('adminhtml/session_quote') ?>
+<?php $_storeId = $_session->getStoreId(); ?>
+
+<ul id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none">
+    <li>
+        <ul class="ops_cc_brands_hints">
+            <li>
+                <?php echo $this->__('Please use this method for the following brands only:') . '<br>'; ?>
+                <?php echo implode(', ', $this->getAliasBrands()), '.' ?>
+                <?php Mage::getModel('adminhtml/url'); ?>
+            </li>
+            <li><?php echo $this->__('Payment using 3D secure is not supported.'); ?></li>
+        </ul>
+        <iframe id="ops_iframe_ops_cc" src="JavaScript:''"></iframe>
+        <script type="text/javascript">
+            var storeId                      = '<?php echo $_storeId ?>';
+            var opsHashUrl                   = '<?php echo $this->getGenerateHashUrl(null, true); ?>';
+            var opsOrderId                   = '<?php echo $_session->getQuoteId(); ?>';
+            var opsPspid                     = '<?php echo $this->getPSPID($_storeId); ?>';
+            var opsAcceptUrl                 = '<?php echo $this->getAliasAcceptUrl(0, false); ?>';
+            var opsExceptionUrl              = '<?php echo $this->getAliasExceptionUrl(0, false); ?>';
+            var opsUrl                       = '<?php echo $this->getAliasGatewayUrl($_storeId); ?>';
+            var opsAlias                     = '<?php echo Mage::helper('ops/alias')->getAlias($_session->getQuote()) ?>';
+            var opsCcSaveAliasUrl            = '<?php echo $this->getCcSaveAliasUrl(0, false); ?>';
+            var opsSaveCcBrandUrl            = '<?php echo $this->getSaveCcBrandUrl(); ?>';
+            var opsCcBrandsForAliasInterface = '<?php echo json_encode($this->getMethod()->getBrandsForAliasInterface()) ?>'.evalJSON();
+
+            function ops_iframe_<?php echo $_code ?>_prepare (data)
+            {
+                var iframe = $('ops_iframe_ops_cc');
+                var doc = null;
+
+                if (iframe.contentDocument) {
+                    doc = iframe.contentDocument;
+                } else if(iframe.contentWindow && iframe.contentWindow.document) {
+                    doc = iframe.contentWindow.document;
+                } else {
+                    doc = iframe.document;
+                } 
+
+                if ("undefined" == typeof(data)) {
+                    data = [];
+                }
+
+                iframe.alreadySet = 'false';
+
+                if ('true' != iframe.alreadySet) {
+                    doc.body.innerHTML="";
+
+                    form = doc.createElement('form');
+                    form.id = 'ops_request_form';
+                    form.method = 'post';
+                    form.action = opsUrl;
+                    form.setAttribute("accept-charset", "utf-8");
+                    form.style.font = '12px/1.5em Arial,Helvetica,sans-serif';
+
+                    var cardholder   = doc.createElement('input');
+                    cardholder.id    = 'CN';
+                    cardholder.name  = 'CN';
+                    if ("undefined" != typeof(data["CN"])) {
+                        cardholder.value = data["CN"]
+                    }
+
+                    var cardholder_label       = doc.createElement('label');
+                    cardholder_label.setAttribute('for', 'CN');
+                    cardholder_label.innerHTML = "<?php echo $this->__('Name on Card') ?>";
+                    cardholder_label.style.display = 'block';
+
+                    var cardnumber   = doc.createElement('input');
+                    cardnumber.id    = 'CARDNO';
+                    cardnumber.name  = 'CARDNO';
+                    if ("undefined" != typeof(data["CARDNO"])) {
+                        cardnumber.value = data["CARDNO"]
+                    }
+
+                    var cardnumber_label       = doc.createElement('label');
+                    cardnumber_label.setAttribute('for', 'CARDNO');
+                    cardnumber_label.innerHTML = "<?php echo $this->__('Credit Card Number') ?>";
+                    cardnumber_label.style.display = 'block';
+
+                    var verificationCode         = doc.createElement('input');
+                    verificationCode.id          = 'CVC';
+                    verificationCode.name        = 'CVC';
+                    verificationCode.placeholder = "<?php echo $this->__('3 digits') ?>";
+                    if ("undefined" != typeof(data["CVC"])) {
+                        verificationCode.value = data["CVC"]
+                    }
+
+                    var verificationCode_label       = doc.createElement('label');
+                    verificationCode_label.setAttribute('for', 'CVC');
+                    verificationCode_label.innerHTML = "<?php echo $this->__('Card Verification Number') ?>";
+                    verificationCode_label.style.display = 'block';
+
+                    var edElement_label       = doc.createElement('label');
+                    edElement_label.setAttribute('for', 'ED');
+                    edElement_label.innerHTML = "<?php echo $this->__('Expiration Date') ?>";
+                    edElement_label.style.display = 'block';
+
+                    var edElement         = doc.createElement('input');
+                    edElement.id          = 'ED';
+                    edElement.type        = 'hidden';
+                    edElement.name        = 'ED';
+
+                    var edMonthElement  = doc.createElement('select');
+                    edMonthElement.id   = 'ED_MONTH_SELECTOR';
+                    edMonthElement.name = 'ED_MONTH_SELECTOR';
+
+                    var edYearElement  = doc.createElement('select');
+                    edYearElement.id   = 'ED_YEAR_SELECTOR';
+                    edYearElement.name = 'ED_YEAR_SELECTOR';
+                    date = new Date();
+                    curMonth = date.getMonth() + 1;
+                    for (var month=1; month<=12; month++) {
+                        edMonthOption           = doc.createElement('option');
+                        if (month == curMonth) {
+                            edMonthOption.setAttribute('selected', 'selected');
+                        }
+                        month = month.toString();
+                        if (month.length < 2) {
+                            month = "0" + month;
+                        }
+                        edMonthOption.value     = month;
+                        edMonthOption.innerHTML = month;
+                        if ("undefined" != typeof(data["ED_MONTH_SELECTOR"]) && month == data["ED_MONTH_SELECTOR"]) {
+                            edMonthOption.setAttribute('selected', 'selected');
+                        }
+                        edMonthElement.appendChild(edMonthOption);
+                    }
+
+                    var thisYear = date.getFullYear();
+                    for (var year=thisYear; year<=thisYear+10; year++) {
+                        edYearOption           = doc.createElement('option');
+                        edYearOption.value     = year.toString().substring(2);
+                        edYearOption.innerHTML = year;
+                        if ("undefined" != typeof(data["ED_YEAR_SELECTOR"]) && edYearOption.value == data["ED_YEAR_SELECTOR"]) {
+                            edYearOption.setAttribute('selected', 'selected');
+                        }
+                        edYearElement.appendChild(edYearOption);
+                    }
+
+                    var pspidElement   = doc.createElement('input');
+                    pspidElement.id    = 'PSPID';
+                    pspidElement.name  = 'PSPID';
+                    pspidElement.type  = 'hidden';
+                    pspidElement.value = opsPspid;
+
+                    var orderIdElement   = doc.createElement('input');
+                    orderIdElement.name  = 'ORDERID';
+                    orderIdElement.id    = 'ORDERID';
+                    orderIdElement.type  = 'hidden';
+                    orderIdElement.value = opsOrderId;
+
+                    var acceptUrlElement   = doc.createElement('input');
+                    acceptUrlElement.name  = 'ACCEPTURL';
+                    acceptUrlElement.id    = 'ACCEPTURL';
+                    acceptUrlElement.type  = 'hidden';
+                    acceptUrlElement.value = opsAcceptUrl;
+
+                    var exceptionUrlElement   = doc.createElement('input');
+                    exceptionUrlElement.name  = 'EXCEPTIONURL';
+                    exceptionUrlElement.id    = 'EXCEPTIONURL';
+                    exceptionUrlElement.type  = 'hidden';
+                    exceptionUrlElement.value = opsExceptionUrl;
+
+                    var paramplusElement   = doc.createElement('input');
+                    paramplusElement.name  = 'PARAMPLUS';
+                    paramplusElement.id    = 'PARAMPLUS';
+                    paramplusElement.type  = 'hidden';
+                    paramplusElement.value = 'RESPONSEFORMAT=JSON';
+
+                    var aliasElement   = doc.createElement('input');
+                    aliasElement.name  = 'ALIAS';
+                    aliasElement.id    = 'ALIAS';
+                    aliasElement.type  = 'hidden';
+                    aliasElement.value = opsAlias;
+
+                    var hash  = doc.createElement('input');
+                    hash.id   = 'SHASIGN';
+                    hash.type = 'hidden';
+                    hash.name = 'SHASIGN';
+
+
+                    form.appendChild(pspidElement);
+
+                    form.appendChild(cardholder_label);
+                    form.appendChild(cardholder);
+
+                    form.appendChild(cardnumber_label);
+                    form.appendChild(cardnumber);
+
+                    form.appendChild(verificationCode_label);
+                    form.appendChild(verificationCode);
+
+                    form.appendChild(edElement_label);
+                    form.appendChild(edElement);
+                    form.appendChild(edMonthElement);
+                    form.appendChild(edYearElement);
+
+                    form.appendChild(acceptUrlElement);
+                    form.appendChild(exceptionUrlElement);
+                    form.appendChild(orderIdElement);
+                    form.appendChild(paramplusElement);
+                    form.appendChild(aliasElement);
+
+                    form.appendChild(hash);
+
+                    doc.body.appendChild(form);
+                }
+            }
+            
+            function buildIframe() {
+                if (typeof(window.ops_iframe_<?php echo $_code ?>_prepare) == "function") {
+                    setTimeout('ops_iframe_<?php echo $_code ?>_prepare([]);', '500');
+                }
+                if (typeof(order.paymentMethod) === "undefined" 
+                    || (typeof(order.paymentMethod) !== "undefined" && order.paymentMethod == "ops_cc" && typeof(window.ops_iframe_<?php echo $_code ?>_prepare) != "function")) {
+                    setTimeout('payment.switchMethod("ops_cc")', '600');
+                }
+
+            }
+            
+            /*
+             * If window is loaded already - run the iframe preparation and switch to ops_cc directly
+             * Otherwise observe the window load event to run iframe preparation
+             */
+            if (document.readyState === "complete") {
+                buildIframe();
+            } else {
+                Element.observe(window, 'load', function() {
+                    buildIframe();
+                });
+            }
+        </script>
+    </li>
+</ul>
+
