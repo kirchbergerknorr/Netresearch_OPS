@@ -1,3 +1,5 @@
+*Please note: this repository is no longer maintained. Please use https://github.com/kirchbergerknorr/magento1_netresearch_ops instead.*
+
 Netresearch OPS
 ======================================
 Version Log
